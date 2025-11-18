@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <title>REST API e Integração com Java</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Stack+Sans+Headline:wght@200..700&display=swap" rel="stylesheet">
+</head>
+<style>
+    * {
+        margin: 0px;
+        padding: 0px;
+        font-family: "Stack Sans Headline", sans-serif;
+        font-optical-sizing: auto;
+        font-style: normal;
+    }
+    header{
+        height: 150px;
+        background-color: rgb(255, 214, 247);
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+        border-style: dotted;
+        border-color: rgb(246, 126, 226);
+        border-width: 3px;;
+        color: white;
+
+        h1 {
+            padding: 20px;
+            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+        }
+        div {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 250px;
+            background-color: rgb(211, 179, 204);
+        }
+    }
+    main {
+        padding:20px;
+        background-image: url(https://64.media.tumblr.com/fad5acf8e8720fe9096aa575117d48cd/tumblr_oedw5v5oev1rh2n3qo1_500.gif);
+        
+    }
+    .section
+        {
+           background-color: rgb(195, 255, 235);
+           border-radius: 25px;
+           padding: 20px;
+           margin: 25px;
+           border-style: dashed;
+           border-width: 5px;
+           border-color: rgb(90, 169, 142);
+           
+           h2, h3{
+                color: rgb(31, 124, 93);
+                margin-bottom: 2px;
+           }
+           b {
+            color: rgb(33, 91, 72);
+           }
+
+           .subsection {
+            margin: 15px;
+            padding-left: 10px;
+           }
+           pre {
+            border-width: 2px;
+            border-style:solid;
+            border-radius: 25px;
+            border-color:rgb(33, 91, 72);
+            padding: 15px;
+            background-color: rgb(136, 210, 184);;
+            font-weight: 300;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+           }
+           .showoff {
+            margin-top: 10px;
+            margin-bottom: 10px;
+            margin-left: 30px;
+           }
+        }
+    
+</style>
+<body>
+<header>
+    <h1>REST API e Java — Explicado de Forma Simples</h1>
+    <div>Esta página explica REST APIs e como usá-las com Java, de forma clara e direta, como se estivéssemos só a conversar.</div>
+</header>
+    <main>
+        <div class="section">
+            <h2>1. O que é uma REST API?</h2>
+            <p>REST (Representational State Transfer) é uma forma de organizar como programas diferentes comunicam entre si. É muito usado para criar APIs, que são maneiras de um programa pedir informações a outro.</p>
+            <div class="subsection">
+        <h3>1.1 Princípios do REST</h3>
+    <ul>
+        <li>Cliente e Servidor separados — cada macaco no seu galho</li>
+        <li>Não guardam a informação entre pedidos</li>
+        <li>Usa cache</li>
+    </ul>
+        </div>
+        <div class="subsection">
+            <h3>1.2 Métodos HTTP mais usados</h3>
+            <ul>
+                <li><b>GET</b> – buscar </li>
+                <li><b>POST</b> – mandar/criar</li>
+                <li><b>PUT</b> – atualizar</li>
+                <li><b>DELETE</b> - apagar</li>
+            </ul>
+        </div>
+        </div>
+
+        <div class="section">
+            <h2>2. Como funciona a comunicação REST?</h2>
+
+    <p>Um cliente (utilizador, o browser, uma app, etc.) envia um pedido para o servidor, e o servidor responde normalmente em JSON.</p>
+    <div class="showoff">
+        Utilizador → API → JSON
+    </div>
+
+
+    <p>Exemplo de uma resposta JSON:</p>
+
+<pre>{
+  "id": 1,
+  "title": "Aprender REST",
+  "completed": false
+}</pre>
+        </div>
+
+
+
+<div class="section">
+    <h2>3. REST API no Frontend (JavaScript)</h2>
+
+    <p>No frontend, usamos <b>fetch()</b>, que é super simples para ir buscar dados a APIs. É tipo mandar mensagem e receber resposta.</p>
+
+    <div class="subsection">
+        <h3>3.1 Exemplo: Obter utilizadores de uma API pública</h3>
+
+        <pre>
+        &lt;button id="load"&gt;Carregar Utilizadores&lt;/button&gt;
+        &lt;pre id="content"&gt;&lt;/pre&gt;
+        
+        &lt;script&gt;
+        document.getElementById("load").addEventListener("click", () =&gt; {
+            fetch("https://jsonplaceholder.typicode.com/users")
+                .then(res =&gt; res.json())
+                .then(data =&gt; {
+                    document.getElementById("content").innerText =
+                    JSON.stringify(data, null, 2);
+                })
+                .catch(() =&gt; {
+                    document.getElementById("content").innerText =
+                    "Ups... deu erro ao carregar os utilizadores.";
+                });
+        });
+        &lt;/script&gt;
+        </pre>
+        
+    </div>
+</div>
+    
+    
+<div class="section">
+    <h2>4. REST API no Backend com Java</h2>
+
+    <p>No Java, também podemos consumir APIs, com o uso de ferramentas que já vêm incluídos ou com frameworks como o Spring.</p>
+<div class="subsection">
+    <h3>4.1 Consumir uma API com Java 11+ (HttpClient)</h3>
+
+<pre>
+import java.net.http.*;
+import java.net.URI;
+
+public class ApiExample {
+    public static void main(String[] args) throws Exception {
+        HttpClient client = HttpClient.newHttpClient();
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("https://api.com/api/"))
+                .build();
+
+        HttpResponse&lt;String&gt; response =
+                client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        System.out.println(response.body());
+    }
+}
+</pre>
+</div>
+    
+    <div class="subsection">
+    <h3>4.2 Consumir API usando Spring Boot (RestTemplate)</h3>
+
+<pre>
+@RestController
+public class ApiController {
+
+    @GetMapping("/todo")
+    public String getTodo() {
+        RestTemplate rt = new RestTemplate();
+        String url = "hhttps://api.com/api/";
+        return rt.getForObject(url, String.class);
+    }
+}
+</pre>
+</div>
+<div class="subsection">
+    <h3>4.3 Criar a tua própria REST API com Java (exemplo com: Spring Boot)</h3>
+
+<pre>
+@RestController
+@RequestMapping("/api")
+public class UserController {
+
+    @GetMapping("/user")
+    public Map&lt;String, String&gt; getUser() {
+        return Map.of(
+            "id", "1",
+            "nome", "João Costa PRO"
+        );
+    }
+}
+</pre>
+
+    <hr>
+</div>
+</div>
+<div class="section">
+    <h2>5. Frontend com Backend em Java</h2>
+
+<pre>
+HTML/JS (Frontend)
+        ↓ fetch()
+Spring Boot (Backend Java)
+        ↓ JPA / Base de Dados
+Base de Dados
+</pre>
+<div class="subsection">
+    <p>Como funciona tudo junto?</p>
+    <ol>
+        <li>Carregas num botão no site</li>
+        <li>O JavaScript manda uma fetch para /api/user</li>
+        <li>O servidor responde com JSON</li>
+        <li>O frontend mostra-te tudo</li>
+    </ol>
+</div>
+</div>
+    
+     <div class="section">
+    <h2>6. Exemplo Completo</h2>
+
+    <div class="subsection">
+    <h3>6.1 Frontend</h3>
+<pre>
+&lt;button onclick="loadUser()"&gt;Carregar Utilizador&lt;/button&gt;
+&lt;pre id="result"&gt;&lt;/pre&gt;
+
+&lt;script&gt;
+function loadUser() {
+    fetch("http://localhost:8080/api/user")
+        .then(r =&gt; r.json())
+        .then(d =&gt; document.getElementById("result").innerText =
+            JSON.stringify(d, null, 2));
+}
+&lt;/script&gt;
+</pre>
+</div>
+<div class="subsection">
+    <h3>6.2 Backend</h3>
+<pre>
+@RestController
+@RequestMapping("/api")
+public class UserController {
+
+    @GetMapping("/user")
+    public Map&lt;String, Object&gt; getUser() {
+        return Map.of(
+            "id", 10,
+            "nome", "Ana Pereira Silva",
+            "idade", 25,
+            "curso", "Informática"
+        );
+    }
+}
+</pre>
+</div>
+</div>
+    </main>
+</body>
+</html>
